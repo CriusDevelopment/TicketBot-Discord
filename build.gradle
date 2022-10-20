@@ -27,7 +27,6 @@ dependencies {
     implementation("net.dv8tion:JDA:5.0.0-alpha.21") {
         exclude module: 'opus-java'
     }
-    implementation 'com.github.koply.KCommando:jda-integration:5.0.0'
 }
 
 jar {

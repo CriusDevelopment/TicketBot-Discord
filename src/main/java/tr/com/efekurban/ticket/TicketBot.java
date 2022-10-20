@@ -1,12 +1,11 @@
 package tr.com.efekurban.ticket;
 
-import me.koply.kcommando.KCommando;
-import me.koply.kcommando.integration.impl.jda.JDAIntegration;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import tr.com.efekurban.ticket.listener.ButtonListener;
 
 public class TicketBot {
 
@@ -31,6 +30,10 @@ public class TicketBot {
         jda = builder.build();
         jda.awaitReady();
 
+        jda.addEventListener(new ButtonListener());
+
+        Runtime.getRuntime().addShutdownHook(new Thread(jda::shutdown));
+
         /*GuildMessageChannel channel = jda.getChannelById(GuildMessageChannel.class, "1000866431417720952");
         for (Message message : channel.getHistory().retrievePast(50).complete()) {
             if (message.getMember().getUser().isBot()) {
@@ -45,18 +48,6 @@ public class TicketBot {
 
         ticketMessageId = channel.sendMessage(message).complete().getId();*/
 
-        JDAIntegration integration = new JDAIntegration(jda);
-        new KCommando(integration)
-                .setOwners(749999019480055939L)
-                .addPackagePath("tr.com.efekurban.ticket.listener")
-                .setCooldown(3000L)
-                .setPrefix("!")
-                .setReadBotMessages(false)
-                .toggleCaseSensitivity()
-                .setAllowSpacesInPrefix(true)
-                .setDefaultFalseMethodName("defaultCallback")
-                .setVerbose(true)
-                .build();
     }
 
     public JDA getJda() {

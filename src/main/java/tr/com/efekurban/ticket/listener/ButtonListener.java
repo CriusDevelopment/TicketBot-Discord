@@ -1,6 +1,5 @@
 package tr.com.efekurban.ticket.listener;
 
-import me.koply.kcommando.internal.annotations.HandleButton;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
@@ -9,6 +8,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import org.jetbrains.annotations.NotNull;
 import tr.com.efekurban.ticket.TicketBot;
 
 import java.util.Collection;
@@ -21,8 +21,20 @@ public class ButtonListener extends ListenerAdapter {
     private final Category TICKET_CATEGORY = TicketBot.INSTANCE.getJda().getCategoryById("808543051713609759");
     private final Category ARCHIVE_CATEGORY = TicketBot.INSTANCE.getJda().getCategoryById("808735231740870736");
 
-    @HandleButton("create-ticket")
-    public void ticketButton(ButtonInteractionEvent event) {
+    @Override
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
+        if (event.getButton().getId().equals("delete-ticket")) {
+            event.getInteraction().deferReply(true).complete().sendMessage("Ticket closed successfully.").queue();
+
+            event.getChannel().asTextChannel().getManager()
+                    .putRolePermissionOverride(event.getGuild().getPublicRole().getIdLong(), null, VIEW_PERMISSION).setParent(ARCHIVE_CATEGORY).queue();
+
+            event.getMessageChannel().sendMessage("Ticket closed.").queue();
+            return;
+        }
+
+        if (!event.getButton().getId().equals("create-ticket")) return;
+
         Member member = event.getMember();
         if (member == null) return;
 
@@ -52,16 +64,6 @@ public class ButtonListener extends ListenerAdapter {
                 });
 
         event.getInteraction().deferReply(true).complete().sendMessage(":white_check_mark: Your ticket created successfully.").queue();
-    }
-
-    @HandleButton("delete-ticket")
-    public void deleteButton(ButtonInteractionEvent event) {
-        event.getInteraction().deferReply(true).complete().sendMessage("Ticket closed successfully.").queue();
-
-        event.getChannel().asTextChannel().getManager()
-                .putRolePermissionOverride(event.getGuild().getPublicRole().getIdLong(), null, VIEW_PERMISSION).setParent(ARCHIVE_CATEGORY).queue();
-
-        event.getMessageChannel().sendMessage("Ticket closed.").queue();
     }
 
 }
