@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+}
+
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+group 'tr.com.efekurbann'
+version '1.0'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+java {
+    def javaVersion = JavaVersion.VERSION_17
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+dependencies {
+    implementation("net.dv8tion:JDA:5.0.0-alpha.21") {
+        exclude module: 'opus-java'
+    }
+    implementation 'com.github.koply.KCommando:jda-integration:5.0.0'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'tr.com.efekurban.ticket.TicketBot'
+        )
+    }
+}
+
+shadowJar {
+    dependsOn(jar)
+
+    archiveFileName = "${archiveBaseName.get()} v${archiveVersion.get()}.jar"
+
+    from sourceSets.getByName("main").output
+    configurations = [project.configurations.getByName("runtimeClasspath")]
+
+}
+
+build {
+    dependsOn shadowJar
+}
