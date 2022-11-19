@@ -3,6 +3,8 @@ package tr.com.efekurban.ticket;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import tr.com.efekurban.ticket.listener.ButtonListener;
@@ -31,6 +33,12 @@ public class TicketBot {
         jda.awaitReady();
 
         jda.addEventListener(new ButtonListener());
+
+        for (Guild guild : jda.getGuilds()) {
+            guild.updateCommands().addCommands(
+                    Commands.slash("ticket", "Creates a ticket for you")
+            ).queue();
+        }
 
         Runtime.getRuntime().addShutdownHook(new Thread(jda::shutdown));
 

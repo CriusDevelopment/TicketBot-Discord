@@ -14,15 +14,6 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-java {
-    def javaVersion = JavaVersion.VERSION_17
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-}
-
 dependencies {
     implementation("net.dv8tion:JDA:5.0.0-alpha.21") {
         exclude module: 'opus-java'
