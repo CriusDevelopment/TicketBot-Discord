@@ -27,8 +27,8 @@ public class ButtonListener extends ListenerAdapter {
         if (event.getButton().getId().equals("delete-ticket")) {
             event.getInteraction().deferReply(true).complete().sendMessage("Ticket closed successfully.").queue();
 
-            event.getChannel().asTextChannel().getManager()
-                    .putRolePermissionOverride(event.getGuild().getPublicRole().getIdLong(), null, VIEW_PERMISSION).setParent(ARCHIVE_CATEGORY).queue();
+            event.getChannel().asTextChannel().getManager().setParent(ARCHIVE_CATEGORY).complete();
+            event.getChannel().asTextChannel().getManager().sync(ARCHIVE_CATEGORY).complete();
 
             event.getMessageChannel().sendMessage("Ticket closed.").queue();
             return;

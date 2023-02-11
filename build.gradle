@@ -20,6 +20,12 @@ dependencies {
     }
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 jar {
     manifest {
         attributes(
@@ -31,7 +37,7 @@ jar {
 shadowJar {
     dependsOn(jar)
 
-    archiveFileName = "${archiveBaseName.get()} v${archiveVersion.get()}.jar"
+    archiveFileName = "${archiveBaseName.get()}.jar"
 
     from sourceSets.getByName("main").output
     configurations = [project.configurations.getByName("runtimeClasspath")]
